@@ -1,10 +1,7 @@
 import express from "express";
-import { Request, Response } from "express";
-
+import blog from "./blog";
 const router = express.Router();
 
-router.use("/", (req: Request, res: Response) => {
-  res.status(200).send("API is running!");
-});
+router.use("/v1/blog", blog);
 
 export default router;

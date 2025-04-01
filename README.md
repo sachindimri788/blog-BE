@@ -4,7 +4,7 @@ This is the Node.js Express.
 
 ## Requirements
 
-* Mongo DB v8.x
+- Mongo DB v8.x
 
 ## How to run?
 
