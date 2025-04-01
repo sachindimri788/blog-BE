@@ -7,7 +7,7 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Blog {
+model blog {
     id      String  @id @default(auto()) @map("_id") @db.ObjectId
     title   String
     summary String
@@ -17,5 +17,20 @@ model Blog {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 
+    comments comment[] @relation("BlogComments")
+
     @@map("blog")
+}
+
+model comment {
+    id      String @id @default(auto()) @map("_id") @db.ObjectId
+    blog_id String @db.ObjectId
+    comment String
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    blog blog @relation("BlogComments", fields: [blog_id], references: [id])
+
+    @@map("comment")
 }
