@@ -8,15 +8,26 @@ import { verifyJwtToken } from "../libs/Jwt";
  */
 export const verifyTokenWithRoles = (requiredRoles?: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers["authorization"];
-    if (!token) {
-      return createErrorResponse({ res, message: "Unauthorized" });
+    const authHeader = req.headers["authorization"];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return createErrorResponse({
+        res,
+        message: "Unauthorized",
+        statusCode: 401,
+      });
     }
+
+    // Extract the token after "Bearer"
+    const token = authHeader.split(" ")[1];
 
     // Verify the token
     const decoded = await verifyJwtToken(token);
-    if (!decoded || !decoded?.id) {
-      return createErrorResponse({ res, message: "Unauthorized" });
+    if (!decoded || decoded.type !== "bearer") {
+      return createErrorResponse({
+        res,
+        message: "Unauthorized",
+        statusCode: 401,
+      });
     }
 
     // If no roles are required, simply proceed to the next middleware
@@ -30,6 +41,7 @@ export const verifyTokenWithRoles = (requiredRoles?: string[]) => {
       return createErrorResponse({
         res,
         message: "Forbidden: Insufficient role",
+        statusCode: 403,
       });
     }
 

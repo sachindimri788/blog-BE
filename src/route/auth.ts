@@ -1,0 +1,16 @@
+import { Router } from "express";
+import { asyncErrorHandler } from "../utils/errorHandler";
+import { validateRequest } from "../middleware/validationMiddleware";
+import { loginSchema } from "../validation";
+import { adminLogin } from "../controller/auth";
+
+// /api/v1/auth/
+const router = Router();
+
+router.post(
+  "/admin/login",
+  validateRequest(loginSchema),
+  asyncErrorHandler(adminLogin)
+);
+
+export default router;

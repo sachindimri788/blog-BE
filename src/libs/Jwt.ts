@@ -6,6 +6,7 @@ export interface JwtPayload {
   id?: string;
   email?: string;
   role?: UserRoleType;
+  type: string;
 }
 
 const secretKey: Secret = config.JWT_PRIVATE_KEY as Secret;

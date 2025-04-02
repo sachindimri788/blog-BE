@@ -5,6 +5,7 @@ import verifyTokenWithRoles from "../middleware/tokenVerificationMiddleware";
 import { validateRequest } from "../middleware/validationMiddleware";
 import { blogSchema } from "../validation";
 
+// /api/v1/blog/
 const router = Router();
 
 router.post(
