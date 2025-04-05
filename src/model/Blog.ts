@@ -8,21 +8,23 @@ export const addBlogToDb = async (data: Prisma.blogCreateInput) => {
   return blogData;
 };
 
-export const getAllBlogsFromDb = async (
+export const getBlogsFromDb = async (
+  filter?: Prisma.blogWhereInput,
   include?: Prisma.blogFindUniqueArgs["include"]
 ) => {
   const blogs = await prisma.blog.findMany({
+    where: filter,
     include: include,
   });
   return blogs;
 };
 
 export const updateBlogInDb = async (
-  id: string,
+  condition: Prisma.blogWhereUniqueInput,
   data: Prisma.blogUpdateInput
 ) => {
   const updatedBlog = await prisma.blog.update({
-    where: { id },
+    where: condition,
     data,
   });
   return updatedBlog;

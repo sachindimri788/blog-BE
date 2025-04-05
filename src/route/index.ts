@@ -1,8 +1,11 @@
 import express from "express";
-import blog from "./blog";
-import auth from "./auth";
+import admin from "./admin/index";
+import user from "./user/index";
+
+// /api/
 const router = express.Router();
 
-router.use("/v1/blog", blog);
-router.use("/v1/auth", auth);
+router.use("/v1/admin", admin);
+router.use("/v1/user", user);
+
 export default router;

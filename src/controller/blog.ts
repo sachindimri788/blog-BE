@@ -3,7 +3,7 @@ import { createErrorResponse, createSuccessResponse } from "../utils/response";
 import {
   addBlogToDb,
   deleteBlogInDb,
-  getAllBlogsFromDb,
+  getBlogsFromDb,
   getBlogFromDb,
   updateBlogInDb,
 } from "../model/Blog";
@@ -31,7 +31,10 @@ export const addBlog = async (req: Request, res: Response) => {
 export const updateBlog = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, summary, active, likes } = req.body;
-  const blogData = await updateBlogInDb(id, { title, summary, active, likes });
+  const blogData = await updateBlogInDb(
+    { id },
+    { title, summary, active, likes }
+  );
   if (!blogData) {
     return createErrorResponse({
       res,
@@ -84,7 +87,17 @@ export const getBlogById = async (req: Request, res: Response) => {
 
 // Retrieves all blogs from the database, including their comments.
 export const getAllBlogs = async (req: Request, res: Response) => {
-  const blogs = await getAllBlogsFromDb({ comments: true });
+  const blogs = await getBlogsFromDb({}, { comments: true });
+
+  return createSuccessResponse({
+    res,
+    message: blogResponseMessage.SUCCESSFULLY_FETCHED_BLOGS,
+    data: blogs,
+  });
+};
+
+export const getActiveBlogs = async (req: Request, res: Response) => {
+  const blogs = await getBlogsFromDb({ active: true }, { comments: true });
 
   return createSuccessResponse({
     res,
