@@ -10,11 +10,14 @@ export const addBlogToDb = async (data: Prisma.blogCreateInput) => {
 
 export const getBlogsFromDb = async (
   filter?: Prisma.blogWhereInput,
-  include?: Prisma.blogFindUniqueArgs["include"]
+  include?: Prisma.blogFindUniqueArgs["include"],
+  pagination?: { skip?: number; take?: number }
 ) => {
   const blogs = await prisma.blog.findMany({
     where: filter,
     include: include,
+    skip: pagination?.skip,
+    take: pagination?.take,
   });
   return blogs;
 };
@@ -48,4 +51,11 @@ export const getBlogFromDb = async (
     include: include,
   });
   return blog;
+};
+
+export const getBlogsCount = async (filter?: Prisma.blogWhereInput) => {
+  const count = await prisma.blog.count({
+    where: filter,
+  });
+  return count;
 };

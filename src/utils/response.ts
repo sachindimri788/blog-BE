@@ -15,15 +15,20 @@ export function createSuccessResponse<T>({
   res,
   message = globalResponse.SUCCESS,
   data,
+  _meta,
 }: {
   res: Response;
   message?: string;
   data?: T;
+  _meta?: {
+    total_record: number;
+  };
 }) {
   return res.status(200).json({
     status: true,
     message,
     data,
+    _meta,
   });
 }
 

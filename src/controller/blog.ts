@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Prisma } from "@prisma/client";
 import { createErrorResponse, createSuccessResponse } from "../utils/response";
 import {
   addBlogToDb,
@@ -6,8 +7,10 @@ import {
   getBlogsFromDb,
   getBlogFromDb,
   updateBlogInDb,
+  getBlogsCount,
 } from "../model/Blog";
 import { blogResponseMessage } from "../utils/responseMessage";
+import { paginationPayload } from "../utils/helper";
 
 // Adds a new blog to the database.
 export const addBlog = async (req: Request, res: Response) => {
@@ -87,21 +90,75 @@ export const getBlogById = async (req: Request, res: Response) => {
 
 // Retrieves all blogs from the database, including their comments.
 export const getAllBlogs = async (req: Request, res: Response) => {
-  const blogs = await getBlogsFromDb({}, { comments: true });
+  const { pageNumber, pageSize, searchString } = req.query;
+  const pagination = paginationPayload(Number(pageNumber), Number(pageSize));
+
+  const filter: Prisma.blogWhereInput = searchString
+    ? {
+        OR: [
+          {
+            title: {
+              contains: String(searchString),
+              mode: "insensitive" as Prisma.QueryMode,
+            },
+          },
+          {
+            summary: {
+              contains: String(searchString),
+              mode: "insensitive" as Prisma.QueryMode,
+            },
+          },
+        ],
+      }
+    : {};
+
+  const blogs = await getBlogsFromDb(filter, { comments: true }, pagination);
+  const totalBlogs = await getBlogsCount(filter);
 
   return createSuccessResponse({
     res,
     message: blogResponseMessage.SUCCESSFULLY_FETCHED_BLOGS,
     data: blogs,
+    _meta: {
+      total_record: totalBlogs,
+    },
   });
 };
 
+// Retrieves all active blogs from the database, including their comments.
 export const getActiveBlogs = async (req: Request, res: Response) => {
-  const blogs = await getBlogsFromDb({ active: true }, { comments: true });
+  const { pageNumber, pageSize, searchString } = req.query;
+  const pagination = paginationPayload(Number(pageNumber), Number(pageSize));
+
+  const filter: Prisma.blogWhereInput = {
+    active: true,
+    ...(searchString && {
+      OR: [
+        {
+          title: {
+            contains: String(searchString),
+            mode: "insensitive" as Prisma.QueryMode,
+          },
+        },
+        {
+          summary: {
+            contains: String(searchString),
+            mode: "insensitive" as Prisma.QueryMode,
+          },
+        },
+      ],
+    }),
+  };
+
+  const blogs = await getBlogsFromDb(filter, { comments: true }, pagination);
+  const totalBlogs = await getBlogsCount(filter);
 
   return createSuccessResponse({
     res,
     message: blogResponseMessage.SUCCESSFULLY_FETCHED_BLOGS,
     data: blogs,
+    _meta: {
+      total_record: totalBlogs,
+    },
   });
 };

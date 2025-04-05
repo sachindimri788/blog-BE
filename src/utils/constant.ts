@@ -8,3 +8,8 @@ export const userRole: Record<string, UserRoleType> = {
 export const tokenType = {
   BEARER: "bearer",
 } as const; // 'as const' to make it a readonly tuple
+
+export const pagination = {
+  PAGE_NUMBER: 1,
+  PAGE_SIZE: 10,
+};
