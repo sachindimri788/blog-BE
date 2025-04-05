@@ -7,6 +7,7 @@ import { adminLogin } from "../controller/auth";
 // /api/v1/auth/
 const router = Router();
 
+// This route is used to login as an admin user
 router.post(
   "/admin/login",
   validateRequest(loginSchema),

@@ -1,8 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { createErrorResponse } from "./response";
+import { globalResponse } from "./responseMessage";
 
-// Global error handler
+/**
+ * Global error handler middleware for Express.
+ * Logs the error and sends a generic server error response.
+ *
+ * @param {Error} err - The error object.
+ * @param {Request} req - The Express request object.
+ * @param {Response} res - The Express response object.
+ * @param {NextFunction} next - The next middleware function.
+ */
 export const globalErrorHandler = (
   err: Error,
   req: Request,
@@ -11,14 +20,20 @@ export const globalErrorHandler = (
 ) => {
   const serverErrorResponse = {
     status: false,
-    message: "Internal Server Error",
+    message: globalResponse.SERVER_ERROR,
   };
   console.log(err);
   res.status(500).json(serverErrorResponse);
   next();
 };
 
-// Async error handler
+/**
+ * Higher-order function to handle async errors in Express routes.
+ * Catches errors and passes them to the next middleware.
+ *
+ * @param {Function} func - The async function to wrap.
+ * @returns {Function} - A wrapped function with error handling.
+ */
 export const asyncErrorHandler = (
   func: (
     req: Request,
@@ -37,6 +52,13 @@ export const asyncErrorHandler = (
   };
 };
 
+/**
+ * Handles Prisma-specific errors and sends appropriate error responses.
+ *
+ * @param {Response} res - The Express response object.
+ * @param {PrismaClientKnownRequestError} error - The Prisma error object.
+ * @returns {Response} - The error response.
+ */
 export const handlePrismaError = (
   res: Response,
   error: PrismaClientKnownRequestError
