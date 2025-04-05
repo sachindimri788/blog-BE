@@ -34,3 +34,24 @@ model comment {
 
     @@map("comment")
 }
+
+model refreshToken {
+    id            String @id @default(auto()) @map("_id") @db.ObjectId
+    account_id    String
+    role          ROLE   @default(USER)
+    refresh_token String @unique
+
+    // Use a TTL(Time To Live) index on 'expires' manually in MongoDB, as Prisma does not natively support TTL indexes.
+    expires DateTime
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+
+    @@index([account_id], name: "account_id_index")
+    @@map("refresh_token")
+}
+
+enum ROLE {
+    USER
+    ADMIN
+}

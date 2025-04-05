@@ -1,12 +1,13 @@
-import { UserRoleType } from "../types";
+import { AccountRoleType } from "../types";
 
-export const userRole: Record<string, UserRoleType> = {
-  USER: "user",
-  ADMIN: "admin",
+export const accountRole: Record<string, AccountRoleType> = {
+  USER: "USER",
+  ADMIN: "ADMIN",
 } as const; // 'as const' to make it a readonly tuple
 
 export const tokenType = {
   BEARER: "bearer",
+  REFRESH: "refresh",
 } as const; // 'as const' to make it a readonly tuple
 
 export const pagination = {

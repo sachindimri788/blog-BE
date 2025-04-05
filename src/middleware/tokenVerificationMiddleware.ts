@@ -25,43 +25,53 @@ export const verifyTokenWithRoles = (requiredRoles?: string[]) => {
       });
     }
 
-    // Extract the token after "Bearer"
-    const token = authHeader.split(" ")[1];
+    try {
+      // Extract the token after "Bearer"
+      const token = authHeader.split(" ")[1];
 
-    /**
-     * Verify the decoded token and ensure it has the correct type.
-     * If verification fails, respond with a 401 Unauthorized error.
-     */
-    const decoded = await verifyJwtToken(token);
-    if (!decoded || decoded.type !== "bearer") {
+      /**
+       * Verify the decoded token and ensure it has the correct type.
+       * If verification fails, respond with a 401 Unauthorized error.
+       */
+      const decoded = await verifyJwtToken(token);
+      if (!decoded || decoded.type !== "bearer") {
+        return createErrorResponse({
+          res,
+          message: authResponseMessage.UNAUTHORIZED_ACCESS,
+          statusCode: 401,
+        });
+      }
+
+      // If no roles are required, simply proceed to the next middleware
+      if (!requiredRoles || requiredRoles.length === 0) {
+        req.user = decoded;
+        return next();
+      }
+
+      /**
+       * If roles are specified, check if the user's role matches one of the required roles.
+       * If the user's role is insufficient, respond with a 403 Forbidden error.
+       */
+      const accountRole = decoded?.role;
+      if (!accountRole || !requiredRoles.includes(accountRole)) {
+        return createErrorResponse({
+          res,
+          message: authResponseMessage.INSUFFICIENT_ROLE,
+          statusCode: 403,
+        });
+      }
+
+      req.user = decoded;
+      return next();
+    } catch (error) {
+      console.error("Token verification error:", error);
+      // Handle unexpected errors during token verification
       return createErrorResponse({
         res,
         message: authResponseMessage.UNAUTHORIZED_ACCESS,
         statusCode: 401,
       });
     }
-
-    // If no roles are required, simply proceed to the next middleware
-    if (!requiredRoles || requiredRoles.length === 0) {
-      req.user = decoded;
-      return next();
-    }
-
-    /**
-     * If roles are specified, check if the user's role matches one of the required roles.
-     * If the user's role is insufficient, respond with a 403 Forbidden error.
-     */
-    const userRole = decoded?.role;
-    if (!userRole || !requiredRoles.includes(userRole)) {
-      return createErrorResponse({
-        res,
-        message: authResponseMessage.INSUFFICIENT_ROLE,
-        statusCode: 403,
-      });
-    }
-
-    req.user = decoded;
-    return next();
   };
 };
 

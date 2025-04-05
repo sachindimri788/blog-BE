@@ -22,7 +22,7 @@ export const globalErrorHandler = (
     status: false,
     message: globalResponse.SERVER_ERROR,
   };
-  console.log(err);
+  console.log("error in globalErrorHandler: ", err);
   res.status(500).json(serverErrorResponse);
   next();
 };
@@ -43,7 +43,7 @@ export const asyncErrorHandler = (
 ) => {
   return (req: Request, res: Response, next: NextFunction) => {
     func(req, res, next).catch((err) => {
-      console.log(err);
+      console.error("Error in asyncErrorHandler: ", err);
       if (err instanceof PrismaClientKnownRequestError) {
         return handlePrismaError(res, err);
       }
