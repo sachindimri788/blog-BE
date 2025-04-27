@@ -2,23 +2,26 @@ import { Router } from "express";
 import { asyncErrorHandler } from "../../utils/errorHandler";
 import {
   addBlog,
+  addManyBlogs,
   deleteBlog,
   getAllBlogs,
   getBlogById,
   updateBlog,
 } from "../../controller/blog";
 import { validateRequest } from "../../middleware/validationMiddleware";
-import { blogSchema, blogUpdateSchema } from "../../validation";
+import { blogSchema, blogsSchema, blogUpdateSchema } from "../../validation";
 
 // /api/v1/admin/blog/
 const router = Router();
 
 // This route is used to add a new blog post
-router.post(
-  "/",
+router.post("/", validateRequest(blogSchema), asyncErrorHandler(addBlog));
 
-  validateRequest(blogSchema),
-  asyncErrorHandler(addBlog)
+// This route is used to add blog in bulk
+router.post(
+  "/bulk",
+  validateRequest(blogsSchema),
+  asyncErrorHandler(addManyBlogs)
 );
 
 // This route is used to update an existing blog post

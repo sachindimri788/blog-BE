@@ -8,6 +8,8 @@ export const blogSchema = z.object({
   likes: z.number().optional(),
 });
 
+export const blogsSchema = z.array(blogSchema);
+
 export const blogUpdateSchema = blogSchema.partial();
 
 export const loginSchema = z.object({

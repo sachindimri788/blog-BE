@@ -8,6 +8,7 @@ import {
   getBlogFromDb,
   updateBlogInDb,
   getBlogsCount,
+  addManyBlogsToDb,
 } from "../model/Blog";
 import { blogResponseMessage } from "../utils/responseMessage";
 import { paginationPayload } from "../utils/helper";
@@ -16,6 +17,23 @@ import { paginationPayload } from "../utils/helper";
 export const addBlog = async (req: Request, res: Response) => {
   const { title, summary, active, likes } = req.body;
   const blogData = await addBlogToDb({ title, summary, active, likes });
+  if (!blogData) {
+    return createErrorResponse({
+      res,
+      message: blogResponseMessage.FAILED_TO_ADD_BLOG,
+    });
+  }
+
+  return createSuccessResponse({
+    res,
+    message: blogResponseMessage.SUCCESSFULLY_ADDED_BLOG,
+    data: blogData,
+  });
+};
+
+// Add many blogs to the database.
+export const addManyBlogs = async (req: Request, res: Response) => {
+  const blogData = await addManyBlogsToDb(req.body);
   if (!blogData) {
     return createErrorResponse({
       res,

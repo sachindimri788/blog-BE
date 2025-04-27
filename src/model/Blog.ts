@@ -8,6 +8,13 @@ export const addBlogToDb = async (data: Prisma.blogCreateInput) => {
   return blogData;
 };
 
+export const addManyBlogsToDb = async (data: Prisma.blogCreateInput[]) => {
+  const blogData = await prisma.blog.createMany({
+    data,
+  });
+  return blogData;
+};
+
 export const getBlogsFromDb = async (
   filter?: Prisma.blogWhereInput,
   include?: Prisma.blogFindUniqueArgs["include"],
