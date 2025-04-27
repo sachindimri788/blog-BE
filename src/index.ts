@@ -15,6 +15,11 @@ declare module "express-serve-static-core" {
   }
 }
 
+app.set(
+  "trust proxy",
+  process.env.NODE_ENV !== "development" ? true : "loopback"
+);
+
 app.use(
   cors({
     origin: "*",
