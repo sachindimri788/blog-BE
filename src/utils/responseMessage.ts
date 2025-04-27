@@ -22,4 +22,6 @@ export const blogResponseMessage = {
   FAILED_TO_DELETE_BLOG: "Failed to delete blog",
   SUCCESSFULLY_FETCHED_BLOG: "Successfully fetched blog",
   FAILED_TO_FETCH_BLOG: "Failed to fetch blog",
+  FAILED_TO_LIKE_COMMENT_BLOG: "Failed to like/comment on blog",
+  SUCCESSFULLY_LIKE_COMMENTED_BLOG: "Successfully liked/commented on blog",
 };

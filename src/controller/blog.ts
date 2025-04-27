@@ -162,3 +162,29 @@ export const getActiveBlogs = async (req: Request, res: Response) => {
     },
   });
 };
+
+// comments on a blog
+export const addLikeCommentOnBlog = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { comment, like } = req.body;
+  const blogData = await updateBlogInDb(
+    { id },
+    {
+      likes: { increment: like === true ? 1 : 0 },
+      ...(comment && { comments: { create: { comment } } }),
+    },
+    { comments: true }
+  );
+  if (!blogData) {
+    return createErrorResponse({
+      res,
+      message: blogResponseMessage.FAILED_TO_LIKE_COMMENT_BLOG,
+    });
+  }
+
+  return createSuccessResponse({
+    res,
+    message: blogResponseMessage.SUCCESSFULLY_LIKE_COMMENTED_BLOG,
+    data: blogData,
+  });
+};

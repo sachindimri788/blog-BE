@@ -14,3 +14,8 @@ export const loginSchema = z.object({
   email: emailSchema,
   password: loginPasswordSchema,
 });
+
+export const commentLikeUserSchema = z.object({
+  comment: z.string().optional(),
+  like: z.boolean().optional(),
+});

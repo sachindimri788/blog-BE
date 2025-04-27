@@ -24,11 +24,13 @@ export const getBlogsFromDb = async (
 
 export const updateBlogInDb = async (
   condition: Prisma.blogWhereUniqueInput,
-  data: Prisma.blogUpdateInput
+  data: Prisma.blogUpdateInput,
+  includes?: Prisma.blogFindUniqueArgs["include"]
 ) => {
   const updatedBlog = await prisma.blog.update({
     where: condition,
     data,
+    include: includes,
   });
   return updatedBlog;
 };

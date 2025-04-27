@@ -24,7 +24,6 @@ router.post(
 // This route is used to update an existing blog post
 router.put(
   "/:id",
-
   validateRequest(blogUpdateSchema),
   asyncErrorHandler(updateBlog)
 );
