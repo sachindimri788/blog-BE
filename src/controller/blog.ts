@@ -91,18 +91,16 @@ export const deleteBlog = async (req: Request, res: Response) => {
 // Retrieves a single blog by its ID, including its comments.
 export const getBlogById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const blog = await getBlogFromDb({ id }, { comments: true });
-  if (!blog) {
-    return createErrorResponse({
-      res,
-      message: blogResponseMessage.FAILED_TO_FETCH_BLOG,
-    });
+  const where: { id: string; active?: boolean } = { id };
+  if (req.originalUrl.startsWith("/api/v1/user/blog")) {
+    where.active = true;
   }
+  const blog = await getBlogFromDb(where, { comments: true });
 
   return createSuccessResponse({
     res,
     message: blogResponseMessage.SUCCESSFULLY_FETCHED_BLOG,
-    data: blog,
+    data: blog || {},
   });
 };
 
@@ -136,7 +134,7 @@ export const getAllBlogs = async (req: Request, res: Response) => {
   return createSuccessResponse({
     res,
     message: blogResponseMessage.SUCCESSFULLY_FETCHED_BLOGS,
-    data: blogs,
+    data: blogs || [],
     _meta: {
       total_record: totalBlogs,
     },
@@ -174,7 +172,7 @@ export const getActiveBlogs = async (req: Request, res: Response) => {
   return createSuccessResponse({
     res,
     message: blogResponseMessage.SUCCESSFULLY_FETCHED_BLOGS,
-    data: blogs,
+    data: blogs || [],
     _meta: {
       total_record: totalBlogs,
     },

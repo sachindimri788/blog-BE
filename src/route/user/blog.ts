@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { asyncErrorHandler } from "../../utils/errorHandler";
-import { addLikeCommentOnBlog, getActiveBlogs } from "../../controller/blog";
+import {
+  addLikeCommentOnBlog,
+  getActiveBlogs,
+  getBlogById,
+} from "../../controller/blog";
 import { validateRequest } from "../../middleware/validationMiddleware";
 import { commentLikeUserSchema } from "../../validation";
 
@@ -14,5 +18,8 @@ router.put(
   validateRequest(commentLikeUserSchema),
   asyncErrorHandler(addLikeCommentOnBlog)
 );
+
+// This route is used to get a blog post by its ID
+router.get("/:id", asyncErrorHandler(getBlogById));
 
 export default router;
